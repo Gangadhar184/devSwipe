@@ -1,17 +1,10 @@
 const express = require('express');
 const app = express();
 
+const adminAuth = require("./middlewares");
+
 //we generally write middleware using use(becuase use can handle all requests)
-app.use('/admin',(req,res,next)=>{
-    console.log("admin auth is getting checked")
-    const token = "abc";
-    const isAdminAuthorized = token === "abc";
-    if(!isAdminAuthorized){
-        res.status(401).send("Unauthorized request");
-    }else{
-        next();
-    }
-})
+app.use('/admin', adminAuth);
 
 app.get("/admin/getAllData",(req,res)=>{
     //logic
