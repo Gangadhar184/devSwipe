@@ -1,12 +1,23 @@
 const express = require('express');
 const app = express();
 
-const adminAuth = require("./middlewares");
+const {adminAuth,userAuth} = require('./middlewares/auth');
+
 
 //we generally write middleware using use(becuase use can handle all requests)
 app.use('/admin', adminAuth);
 
-app.get("/admin/getAllData",(req,res)=>{
+// app.post('/user/login',(req,res)=>{
+//     res.send("user logged in successfully");
+// })
+app.post('/user/login', (req,res)=>{
+    res.send("user logged in successfully");
+})
+app.get('/user/data',userAuth , (req,res)=>{
+    res.send("user data sent");
+})
+
+app.get("/admin/getAllData",userAuth,(req,res)=>{
     //logic
     res.send("all data sent");
 })
