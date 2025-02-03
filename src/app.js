@@ -27,6 +27,7 @@ app.post('/test',(req,res) => {
     })
 })
 
+
 //using put we can update all body at a time
 app.put('/test',(req,res)=>{
     animeData = {
@@ -50,6 +51,26 @@ app.patch('/test',(req,res)=>{
         data : animeData
     })
 })
+
+// app.delete('/test', (req,res)=>{
+//     animeData = {
+        
+//     }
+//     res.send({
+//         message : "anime data deleted successfully",
+//         data : animeData
+//     })
+// })
+app.delete('/test',(req,res)=>{
+    if(animeData.role){
+        delete animeData.role;
+        res.send({
+            message : "role property deleted successfully",
+            data : animeData
+        })
+    }
+})
+
 
 // app.patch('/test',(req,res)=>{
 //     animeData = { ...animeData, ...req.body};
