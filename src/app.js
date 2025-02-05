@@ -20,11 +20,34 @@ app.post('/signup', async (req, res) => {
     }
 })
 
+//user api to get user email
+app.get('/user', async(req,res)=>{
+    try{
+        const users = await User.findOne({email:req.body.email})
+        res.send(users);
+    }
+    catch(err){
+        res.status(400).send("something went wrong")
+    }
+})
+
 //feed api - get/feed get all the users from the database
 app.get('/feed', async(req,res)=>{
     try{
     const users = await User.find({});
     res.send(users);
+    }
+    catch(err){
+        res.status(400).send("Something went wrong");
+    }
+})
+
+//delete - delete user api
+app.delete('/user', async(req,res)=>{
+    const userId = req.body.userId;
+    try{
+        const user = await User.findByIdAndDelete({_id : userId});
+        res.send(user);
     }
     catch(err){
         res.status(400).send("Something went wrong");
