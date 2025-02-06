@@ -18,7 +18,7 @@ app.post('/signup', async (req, res) => {
 
    
     const {firsName, lastName, email, password} = req.body;
-    
+
      //encrypt the password
     const passwordHash = bcrypt.hash(password, 10);
     console.log(passwordHash);
@@ -35,7 +35,11 @@ app.post('/signup', async (req, res) => {
     catch (err) {
         res.status(400).send("Error in saving userdata: " + err.message)
     }
-})
+});
+
+
+//login api postrequest
+
 
 //user api to get user email
 app.get('/user', async (req, res) => {
