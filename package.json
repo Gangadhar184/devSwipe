@@ -18,6 +18,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.21.2",
     "mongodb": "^6.13.0",
-    "mongoose": "^8.9.6"
+    "mongoose": "^8.10.0",
+    "validator": "^13.12.0"
   }
 }

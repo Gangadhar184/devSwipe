@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose');
-const validator = require("email-validator")
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     firstName : {
@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
         maxLength : 50
     },
     lastName : {
-        type : String
+        type : String,
+        required : true
     },
     email : {
         type : String,
@@ -26,7 +27,6 @@ const userSchema = new mongoose.Schema({
     password : {
         type : String,
         required : true,
-        minLength : 4,
         validate(value){
             if(!validator.isStrongPassword(value)){
                 throw new Error("Use strong password: " + value);
@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl : {
         type : String,
-        default : "",
+        default : "https://www.w3schools.com/howto/howto_css_image_avatar.asp",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Invalid photo url: " + value);
