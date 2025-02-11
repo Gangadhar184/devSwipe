@@ -4,9 +4,13 @@ const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
 
 //singup post request (Registering the the new user)
 
@@ -59,20 +63,66 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      throw new Error("Invalid");
+      throw new Error("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (isPasswordValid) {
+
+      //create a jwt token
+      const token = await jwt.sign({_id : user._id }, "onepiece@123"); ;
+      console.log(token);
+
+      //cookies - add token to cookie and send the response to the user
+      res.cookie("token", token);
+
+
       res.send("Login successfull");
     } else {
-      throw new Error("Invalid");
+      throw new Error("Invalid credentials");
     }
   } catch (err) {
     res.status(400).send("Error in saving userdata: " + err.message);
   }
 });
+
+app.get("/profile", async (req,res)=>{
+  try{
+
+    const cookies =  req.cookies;
+
+    //extract tokes from cookies
+    const {token} = cookies;
+
+    if(!token) {
+      throw new Error("Invalid token");
+    }
+
+    //validate my tokens
+    const decodedMessage = await jwt.verify(token, 'onepiece@123');
+    console.log(decodedMessage);
+
+    //getting the decodedMessage from loggedin user
+    const {_id} = decodedMessage;
+    console.log("logged in user is " + _id);
+
+    //finding user from database
+    const user = await User.findById(_id);
+
+    if(!user){
+      throw new Error("User doesnt exist");
+    }
+
+    res.send(user);
+
+    console.log(cookies);
+    // res.send("reading cookies")
+  }
+  catch(err){
+    res.status(400).send("Something went wrong");
+  }
+})
 
 //feed api - get/feed get all the users from the database
 app.get("/feed", async (req, res) => {
