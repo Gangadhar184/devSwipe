@@ -67,16 +67,16 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid credentials");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
 
     if (isPasswordValid) {
 
-      //create a jwt token
-      const token = await jwt.sign({_id : user._id }, "onepiece@123"); ;
-      console.log(token);
+      //create a jwt token  (this comes from userSchema model, it is like a helper function)
+      const token = await user.getJWT();
+      // console.log(token);
 
       //cookies - add token to cookie and send the response to the user
-      res.cookie("token", token);
+      res.cookie("token", token, {expires : new Date(Date.now() + 8 * 3600000) });
 
 
       res.send("Login successfull");
@@ -130,6 +130,13 @@ app.get("/feed", async (req, res) => {
     res.status(400).send("Something went wrong");
   }
 });
+
+app.post("/sendConnectionRequest", userAuth, async (req,res)=>{
+  const user = req.user;
+  console.log("connection request sent");
+  res.send(user.firstName + " sent request to you");
+
+})
 
 //delete - delete user api
 app.delete("/user", async (req, res) => {
