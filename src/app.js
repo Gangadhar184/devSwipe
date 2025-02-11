@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const {userAuth} = require('./middlewares/auth');
 const app = express();
 
 app.use(express.json());
@@ -23,7 +24,7 @@ app.post("/signup", async (req, res) => {
 
     //encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
-    console.log(passwordHash);
+    // console.log(passwordHash);
 
     //create instance to the class which is User Model,(never pass req.body it is badway,goodway is to expicitly)
     const user = new User({
@@ -87,36 +88,32 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req,res)=>{
+app.get("/profile", userAuth,  async (req,res)=>{
   try{
 
-    const cookies =  req.cookies;
+    // we are verifying below code in auth js
+    // const cookies =  req.cookies;
 
-    //extract tokes from cookies
-    const {token} = cookies;
+    // //extract tokes from cookies
+    // const {token} = cookies;
 
-    if(!token) {
-      throw new Error("Invalid token");
-    }
+    // if(!token) {
+    //   throw new Error("Invalid token");
+    // }
 
-    //validate my tokens
-    const decodedMessage = await jwt.verify(token, 'onepiece@123');
-    console.log(decodedMessage);
+    // //validate my tokens
+    // const decodedMessage = await jwt.verify(token, 'onepiece@123');
+    // console.log(decodedMessage);
 
-    //getting the decodedMessage from loggedin user
-    const {_id} = decodedMessage;
-    console.log("logged in user is " + _id);
+    // //getting the decodedMessage from loggedin user
+    // const {_id} = decodedMessage;
+    // console.log("logged in user is " + _id);
 
     //finding user from database
-    const user = await User.findById(_id);
-
-    if(!user){
-      throw new Error("User doesnt exist");
-    }
-
+    const user = req.user;
     res.send(user);
 
-    console.log(cookies);
+    // console.log(cookies);
     // res.send("reading cookies")
   }
   catch(err){
