@@ -88,5 +88,5 @@ authRouter.post("/logout", async (req, res)=>{
         res.status(400).send("Something went wrong " + err.message);
     }
 })
-module.exports = authRouter ;
+module.exports = authRouter;
 
